@@ -7,7 +7,7 @@ import ru.vlsu.autest_3.dao.model.TestSetDo;
 import java.util.List;
 import java.util.Optional;
 
-public interface TestCaseDao {
+public interface TestDao {
   //  Optional<TestSetDo> getFullTestSetById(long id);
 
     List<TestCaseDo> getTestCasesBySetId(long id);

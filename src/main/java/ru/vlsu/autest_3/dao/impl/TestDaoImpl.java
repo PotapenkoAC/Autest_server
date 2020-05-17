@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.vlsu.autest_3.dao.TestCaseDao;
+import ru.vlsu.autest_3.dao.TestDao;
 import ru.vlsu.autest_3.dao.mapper.ActionRowMapper;
 import ru.vlsu.autest_3.dao.mapper.TestCaseRowMapper;
 import ru.vlsu.autest_3.dao.mapper.TestSetRowMapper;
@@ -12,19 +12,11 @@ import ru.vlsu.autest_3.dao.model.ActionDo;
 import ru.vlsu.autest_3.dao.model.TestCaseDo;
 import ru.vlsu.autest_3.dao.model.TestSetDo;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class TestCaseDaoImpl implements TestCaseDao {
-
-    private static final String GET_FULL_TEST_SET_BY_ID_SQL = "SELECT * FROM test_set" +
-            " INNER JOIN set_case sc on test_set.id = sc.set_id" +
-            " INNER JOIN test_case tc on sc.case_id = tc.id" +
-            " INNER JOIN action a on tc.id = a.test_case_id" +
-            " WHERE test_set.id = :setId" +
-            " ORDER BY sc.order ASC";
+public class TestDaoImpl implements TestDao {
 
     private static final String GET_TEST_CASES_BY_TEST_SET_ID_SQL =
             "SELECT tc.id               as id,\n" +
@@ -62,19 +54,9 @@ public class TestCaseDaoImpl implements TestCaseDao {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    public TestCaseDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+    public TestDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
-/*
-    @Override
-    public Optional<TestSetDo> getFullTestSetById(long id) {
-        MapSqlParameterSource params = new MapSqlParameterSource().addValue("setId", id);
-        return jdbcTemplate.query(GET_FULL_TEST_SET_BY_ID_SQL, params,new TestSetRowMapper() ).stream().findFirst();
-    }
-*/
-
-
 
     @Override
     public List<TestCaseDo> getTestCasesBySetId(long id) {
@@ -93,6 +75,5 @@ public class TestCaseDaoImpl implements TestCaseDao {
         MapSqlParameterSource params = new MapSqlParameterSource().addValue("casesId",ids);
         return jdbcTemplate.query(GET_ACTIONS_BY_CASES_ID_SQL,params, new ActionRowMapper());
     }
-
 
 }
