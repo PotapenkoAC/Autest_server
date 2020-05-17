@@ -24,7 +24,9 @@ public class ActionRowMapper implements RowMapper<ActionDo> {
                     .setStatus(resultSet.getString("status"))
                     .setFeature(resultSet.getString("feature"))
                     .setOrder(resultSet.getInt("order"))
-                    .setMetadata(new ObjectMapper().readValue(resultSet.getString("metadata"), HashMap.class));
+                    .setMetadata(new ObjectMapper().readValue(resultSet.getString("metadata"), HashMap.class))
+                    .setTestCaseId(resultSet.getLong("test_case_id"));
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

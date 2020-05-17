@@ -23,7 +23,6 @@ public class TestManagerImpl implements TestManager {
         this.testCaseDao = testCaseDao;
     }
 
-
     @Override
     public List<TestCaseDo> getTestCaseBySetId(long id) {
         return testCaseDao.getTestCasesBySetId(id);
@@ -46,14 +45,14 @@ public class TestManagerImpl implements TestManager {
     }
 
     private void collectActionsToCases(List<TestCaseDo> cases, List<ActionDo> actions) {
-       for(TestCaseDo curCase: cases){
-           List<ActionDo> tempActions = new ArrayList<>();
-           for(ActionDo action: actions){
-               if(curCase.getId().equals(action.getTestCaseId())){
-                   tempActions.add(action);
-               }
-           }
-           curCase.setActions(tempActions);
+        for (TestCaseDo curCase : cases) {
+            List<ActionDo> tempActions = new ArrayList<>();
+            for (ActionDo action : actions) {
+                if (curCase.getId().equals(action.getTestCaseId())) {
+                    tempActions.add(action);
+                }
+            }
+            curCase.setActions(tempActions);
         }
     }
 

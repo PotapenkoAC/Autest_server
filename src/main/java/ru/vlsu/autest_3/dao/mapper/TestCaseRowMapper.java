@@ -18,7 +18,7 @@ public class TestCaseRowMapper implements RowMapper<TestCaseDo> {
                 .setCreatedBy(collectQAData(resultSet,"created_"))
                 .setLastModifiedBy(collectQAData(resultSet,"modified_"))
                 .setStatus(resultSet.getString("status"))
-                .setManual(resultSet.getBoolean("is_manual"));
+                .setIsManual((resultSet.getBoolean("is_manual")));
     }
 
         private String collectQAData(ResultSet resultSet,String who) throws SQLException {

@@ -29,4 +29,9 @@ public class TestRestController {
     public TestSetDo getTestSetById(@RequestParam long id){
         return testManager.getTestSetById(id);
     }
+
+    @GetMapping("full_set")
+    public TestSetDo getFullTestSetById(@RequestParam long id){
+        return testManager.getFullTestSetById(id);
+    }
 }
