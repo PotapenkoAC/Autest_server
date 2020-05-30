@@ -21,7 +21,7 @@ public class TestSetRowMapper implements RowMapper<TestSetDo> {
     }
 
     private String collectQAData(ResultSet resultSet) throws SQLException {
-        return resultSet.getLong("qa_id")
+        return resultSet.getLong("created_by")
                 + "@" + resultSet.getString("surname")
                 + " " + resultSet.getString("name")
                 + " " + resultSet.getString("patronymic");

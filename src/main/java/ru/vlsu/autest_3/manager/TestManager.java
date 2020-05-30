@@ -12,4 +12,6 @@ public interface TestManager {
     TestSetDo getTestSetById(long id);
 
     TestSetDo getFullTestSetById(long id);
+
+    void saveTestSet(TestSetDo testSet);
 }

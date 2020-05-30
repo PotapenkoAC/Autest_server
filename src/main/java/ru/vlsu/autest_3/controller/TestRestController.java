@@ -1,9 +1,7 @@
 package ru.vlsu.autest_3.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.vlsu.autest_3.dao.model.TestCaseDo;
 import ru.vlsu.autest_3.dao.model.TestSetDo;
 import ru.vlsu.autest_3.manager.TestManager;
@@ -30,8 +28,13 @@ public class TestRestController {
         return testManager.getTestSetById(id);
     }
 
-    @GetMapping("full_set")
+    @GetMapping("/full_set")
     public TestSetDo getFullTestSetById(@RequestParam long id){
         return testManager.getFullTestSetById(id);
+    }
+
+    @PostMapping("/test_set")
+    public void saveTestSet(@RequestBody TestSetDo testSet){
+        testManager.saveTestSet(testSet);
     }
 }

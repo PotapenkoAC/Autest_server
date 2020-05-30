@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TestDao {
-  //  Optional<TestSetDo> getFullTestSetById(long id);
-
     List<TestCaseDo> getTestCasesBySetId(long id);
 
     Optional<TestSetDo> getTestSetById(long id);
 
     List<ActionDo> getActionsByCasesId(List<Long> id);
+
+    void saveTestSet(TestSetDo testSet);
 }

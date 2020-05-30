@@ -44,6 +44,11 @@ public class TestManagerImpl implements TestManager {
         return set.map(testSetDo -> testSetDo.setCases(cases)).orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
+    @Override
+    public void saveTestSet(TestSetDo testSet) {
+
+    }
+
     private void collectActionsToCases(List<TestCaseDo> cases, List<ActionDo> actions) {
         for (TestCaseDo curCase : cases) {
             List<ActionDo> tempActions = new ArrayList<>();
@@ -61,5 +66,4 @@ public class TestManagerImpl implements TestManager {
         cases.forEach(caseDo -> result.add(caseDo.getId()));
         return result;
     }
-
 }

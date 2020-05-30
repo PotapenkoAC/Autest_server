@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.vlsu.autest_3.dao.TestDao;
 import ru.vlsu.autest_3.dao.mapper.ActionRowMapper;
+import ru.vlsu.autest_3.dao.mapper.Helper;
 import ru.vlsu.autest_3.dao.mapper.TestCaseRowMapper;
 import ru.vlsu.autest_3.dao.mapper.TestSetRowMapper;
 import ru.vlsu.autest_3.dao.model.ActionDo;
@@ -43,7 +44,7 @@ public class TestDaoImpl implements TestDao {
                     "ORDER BY sc.order";
 
     private static final String GET_TEST_SET_BY_ID_SQL = "SELECT * FROM test_set\n" +
-            "    INNER JOIN qa_specialist qs on test_set.qa_id = qs.id\n" +
+            "    INNER JOIN qa_specialist qs on test_set.created_by = qs.id\n" +
             "    WHERE test_set.id=:setId";
 
     private static final String GET_ACTIONS_BY_CASES_ID_SQL = "SELECT *\n" +
@@ -51,6 +52,9 @@ public class TestDaoImpl implements TestDao {
             "WHERE test_case_id IN (:casesId)\n" +
             "GROUP BY test_case_id, \"order\",id\n" +
             "ORDER BY \"order\" ASC";
+
+    private static final String INSERT_TEST_CASE_SQL = "INSERT INTO test_set (title,created_by,status) VALUES(:title,:qa_id,:status)";
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -72,8 +76,17 @@ public class TestDaoImpl implements TestDao {
 
     @Override
     public List<ActionDo> getActionsByCasesId(List<Long> ids) {
-        MapSqlParameterSource params = new MapSqlParameterSource().addValue("casesId",ids);
-        return jdbcTemplate.query(GET_ACTIONS_BY_CASES_ID_SQL,params, new ActionRowMapper());
+        MapSqlParameterSource params = new MapSqlParameterSource().addValue("casesId", ids);
+        return jdbcTemplate.query(GET_ACTIONS_BY_CASES_ID_SQL, params, new ActionRowMapper());
+    }
+
+    @Override
+    public void saveTestSet(TestSetDo testSet) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("title", testSet.getTitle())
+                .addValue("qa_id", Helper.getQAIdFromString(testSet.getAssignedTo()))
+                .addValue("status", testSet.getStatus());
+        jdbcTemplate.update(INSERT_TEST_CASE_SQL, params);
     }
 
 }
