@@ -45,8 +45,8 @@ public class TestManagerImpl implements TestManager {
     }
 
     @Override
-    public void saveTestSet(TestSetDo testSet) {
-
+    public TestSetDo saveTestSet(TestSetDo testSet,Boolean withResult) {
+        return null;
     }
 
     private void collectActionsToCases(List<TestCaseDo> cases, List<ActionDo> actions) {
