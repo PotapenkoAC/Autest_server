@@ -20,6 +20,8 @@ public class TestRestController {
 
     private final TestManager testManager;
 
+    //GET Mappings
+
     @GetMapping("/test_case")
     public HttpEntity<List<TestCaseDo>> getTestCaseBySetId(@RequestParam long id) {
         ResponseEntity.BodyBuilder response = ResponseEntity.status(200);
@@ -38,10 +40,14 @@ public class TestRestController {
         return response.body(testManager.getFullTestSetById(id));
     }
 
+    //POST mappings
+
     @PostMapping("/test_set")
     public HttpEntity<TestSetDo> saveTestSet(@RequestBody TestSetDo testSet, @RequestParam(required = false, defaultValue = "false", name = "_withResult") Boolean withResult) {
         ResponseEntity.BodyBuilder response = ResponseEntity.status(201);
         return response.body(testManager.saveTestSet(testSet, withResult));
     }
 
+
+    //PATCH mappings
 }
