@@ -1,8 +1,13 @@
 package ru.vlsu.autest_3.dao.impl;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.core.token.Token;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import ru.vlsu.autest_3.dao.UserDao;
@@ -10,6 +15,9 @@ import ru.vlsu.autest_3.dao.mapper.UserMapper;
 import ru.vlsu.autest_3.dao.mapper.UserRowMapper;
 import ru.vlsu.autest_3.dao.model.UserDo;
 
+import java.security.Key;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,14 +46,14 @@ public class UserDaoImpl implements UserDao {
         Optional<UserDo> optUser = jdbcTemplate.query(GET_USER_BY_LOGIN_AND_PASSWORD_SQL, params, new UserRowMapper()).stream().findFirst();
         UserDo user = optUser.orElse(null);
         if (user != null) {
-            user.setToken(UUID.randomUUID().toString());
+            user.setToken(generateToken(user));
             MapSqlParameterSource updateParams = new MapSqlParameterSource()
                     .addValue("token", user.getToken())
                     .addValue("id", user.getId());
             jdbcTemplate.update(SET_LOGIN_SQL, updateParams);
             return user.getToken();
         }
-        return null;
+        return "";
     }
 
   /*  @Override
@@ -62,5 +70,12 @@ public class UserDaoImpl implements UserDao {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("token", token);
         return (jdbcTemplate.query(GET_USER_BY_TOKEN_SQL, params, new UserMapper()).stream().findFirst());
+    }
+
+    private String generateToken(UserDo user) {
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        Map<String, String> claims = new HashMap<>();
+        claims.put("role", user.getRole());
+        return Jwts.builder().setClaims(claims).signWith(key).compact();
     }
 }

@@ -23,7 +23,7 @@ import ru.vlsu.autest_3.dao.UserDao;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(
-            new AntPathRequestMatcher("/test_case/**")
+            new AntPathRequestMatcher("/rest/test_case/**")
     );
     AuthProvider provider;
 
@@ -45,22 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .logout().disable();
 
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/test_case").permitAll()
-                .antMatchers("/test_set").permitAll()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/registration").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .failureForwardUrl("/login?error=true")
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/home");
     }
 
     @Bean
