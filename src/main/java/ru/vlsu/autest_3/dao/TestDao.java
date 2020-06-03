@@ -14,5 +14,5 @@ public interface TestDao {
 
     List<ActionDo> getActionsByCasesId(List<Long> id);
 
-    void saveTestSet(TestSetDo testSet);
+    TestSetDo saveTestSet(TestSetDo testSet);
 }

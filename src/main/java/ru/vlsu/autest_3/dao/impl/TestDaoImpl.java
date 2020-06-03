@@ -12,6 +12,7 @@ import ru.vlsu.autest_3.dao.mapper.TestSetRowMapper;
 import ru.vlsu.autest_3.dao.model.ActionDo;
 import ru.vlsu.autest_3.dao.model.TestCaseDo;
 import ru.vlsu.autest_3.dao.model.TestSetDo;
+import ru.vlsu.autest_3.dao.model.dbconst.Sequences;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,7 @@ public class TestDaoImpl implements TestDao {
             "GROUP BY test_case_id, \"order\",id\n" +
             "ORDER BY \"order\" ASC";
 
-    private static final String INSERT_TEST_CASE_SQL = "INSERT INTO test_set (title,created_by,status) VALUES(:title,:qa_id,:status)";
+    private static final String INSERT_TEST_CASE_SQL = "INSERT INTO test_set (id,title,created_by,status) VALUES(:id,:title,:qa_id,:status)";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -81,12 +82,18 @@ public class TestDaoImpl implements TestDao {
     }
 
     @Override
-    public void saveTestSet(TestSetDo testSet) {
+    public TestSetDo saveTestSet(TestSetDo testSet) {
+        String query = "SELECT last_value from " + Sequences.TEST_SET_ID_SEQ;
+        long testSetId = jdbcTemplate.queryForObject(query, new MapSqlParameterSource(), long.class) + 1;
         MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("id", testSetId)
                 .addValue("title", testSet.getTitle())
                 .addValue("qa_id", Helper.getQAIdFromString(testSet.getAssignedTo()))
                 .addValue("status", testSet.getStatus());
         jdbcTemplate.update(INSERT_TEST_CASE_SQL, params);
+        return this.getTestSetById(testSetId).orElse(null);
     }
+
+
 
 }

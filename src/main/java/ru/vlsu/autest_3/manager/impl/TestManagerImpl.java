@@ -11,12 +11,14 @@ import ru.vlsu.autest_3.dao.model.TestSetDo;
 import ru.vlsu.autest_3.manager.TestManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class TestManagerImpl implements TestManager {
+
+    private final String DEFAULT_TEST_SET_STATUS = "OPENED";
+
     private final TestDao testDao;
 
     @Autowired
@@ -46,8 +48,10 @@ public class TestManagerImpl implements TestManager {
     }
 
     @Override
-    public TestSetDo saveTestSet(TestSetDo testSet,Boolean withResult) {
-        return null;
+    public TestSetDo saveTestSet(TestSetDo testSet, Boolean withResult) {
+        testSet.setStatus(DEFAULT_TEST_SET_STATUS);
+        TestSetDo result = testDao.saveTestSet(testSet);
+        return withResult ? result : null;
     }
 
     private void collectActionsToCases(List<TestCaseDo> cases, List<ActionDo> actions) {

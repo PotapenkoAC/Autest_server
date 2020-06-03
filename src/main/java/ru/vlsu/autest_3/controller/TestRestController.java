@@ -50,6 +50,5 @@ public class TestRestController {
         return response.body(testManager.saveTestSet(testSet, withResult));
     }
 
-
     //PATCH mappings
 }
