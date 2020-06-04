@@ -14,5 +14,11 @@ public interface TestDao {
 
     List<ActionDo> getActionsByCasesId(List<Long> id);
 
+    TestCaseDo getTestCaseById(long id);
+
     TestSetDo saveTestSet(TestSetDo testSet);
+
+    TestCaseDo saveTestCase(TestCaseDo testCase);
+
+
 }

@@ -50,5 +50,12 @@ public class TestRestController {
         return response.body(testManager.saveTestSet(testSet, withResult));
     }
 
+    @PostMapping("/rest/test_case")
+    public HttpEntity<TestCaseDo> saveTestCase(@RequestBody TestCaseDo testCase, @RequestParam(required = false, defaultValue = "false", name = "_withResult") Boolean withResult, @RequestHeader(name = "Authorization") String authorization) {
+        ResponseEntity.BodyBuilder response = ResponseEntity.status(201);
+        return response.body(testManager.saveTestCase(testCase, authorization,withResult));
+    }
+
+
     //PATCH mappings
 }

@@ -1,6 +1,7 @@
 package ru.vlsu.autest_3.dao.impl;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -16,10 +17,7 @@ import ru.vlsu.autest_3.dao.mapper.UserRowMapper;
 import ru.vlsu.autest_3.dao.model.UserDo;
 
 import java.security.Key;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class UserDaoImpl implements UserDao {
@@ -56,14 +54,14 @@ public class UserDaoImpl implements UserDao {
         return "";
     }
 
-  /*  @Override
-    public Optional<UserDo> findByToken(String token) {
+    @Override
+    public UserDo getByToken(String token) {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("token", token);
-        return (jdbcTemplate.query(GET_USER_BY_TOKEN_SQL, params, new UserRowMapper()).stream().findFirst();
+        return (jdbcTemplate.query(GET_USER_BY_TOKEN_SQL, params, new UserRowMapper()).stream().findFirst()).orElse(null);
 
     }
-    */
+
 
     @Override
     public Optional<User> findByToken(String token) {
@@ -76,6 +74,8 @@ public class UserDaoImpl implements UserDao {
         Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
         Map<String, String> claims = new HashMap<>();
         claims.put("role", user.getRole());
-        return Jwts.builder().setClaims(claims).signWith(key).compact();
+        claims.put("login", user.getLogin());
+        claims.put("id", user.getId().toString());
+        return Jwts.builder().setClaims(claims).setHeaderParam(JwsHeader.KEY_ID, Arrays.toString(key.getEncoded())).signWith(key).compact();
     }
 }

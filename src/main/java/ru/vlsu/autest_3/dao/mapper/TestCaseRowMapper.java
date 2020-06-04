@@ -14,7 +14,6 @@ public class TestCaseRowMapper implements RowMapper<TestCaseDo> {
                 .setTitle(resultSet.getString("title"))
                 .setOrder(resultSet.getInt("order"))
                 .setCreationDate(resultSet.getTimestamp("creation_date"))
-                .setLastModifiedDate(resultSet.getTimestamp("last_modified"))
                 .setCreatedBy(collectQAData(resultSet,"created_"))
                 .setLastModifiedBy(collectQAData(resultSet,"modified_"))
                 .setStatus(resultSet.getString("status"))

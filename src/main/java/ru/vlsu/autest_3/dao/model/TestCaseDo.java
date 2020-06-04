@@ -19,4 +19,5 @@ public class TestCaseDo {
     private String createdBy; // in format id@fio
     private String status; //{TODO, DONE, IN_PROGRESS, BLOCKED, FAILED}
     private Boolean isManual;
+    private Long testSetId;
 }

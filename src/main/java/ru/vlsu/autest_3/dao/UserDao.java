@@ -10,4 +10,6 @@ public interface UserDao {
     String login(String username, String password);
 
     Optional<User> findByToken(String token);
+
+    UserDo getByToken(String token);
 }

@@ -13,5 +13,7 @@ public interface TestManager {
 
     TestSetDo getFullTestSetById(long id);
 
-    TestSetDo saveTestSet(TestSetDo testSet,Boolean withResult);
+    TestSetDo saveTestSet(TestSetDo testSet, Boolean withResult);
+
+    TestCaseDo saveTestCase(TestCaseDo testCase, String authorization,Boolean withResult);
 }
