@@ -1,6 +1,8 @@
 package ru.vlsu.autest_3.dao.impl;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.SqlTypeValue;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -15,9 +17,8 @@ import ru.vlsu.autest_3.dao.model.TestCaseDo;
 import ru.vlsu.autest_3.dao.model.TestSetDo;
 import ru.vlsu.autest_3.dao.model.dbconst.Sequences;
 
-import java.sql.Timestamp;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.SQLType;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,6 +82,8 @@ public class TestDaoImpl implements TestDao {
                     "         LEFT JOIN qa_specialist modified on tc.last_modified_by = modified.id\n" +
                     "WHERE tc.id = :id;";
 
+    private static final String GET_ACTION_BY_ID_SQL = "SELECT * FROM action WHERE id = :id";
+
     private static final String INSERT_TEST_CASE_SQL = "INSERT INTO test_case (id, title, last_modified, status, is_manual, created_by, creation_date, last_modified_by) " +
             "VALUES (:id, :title, :last_modified, :status, :is_manual, :created_by, :creation_date, :last_modified_by);";
 
@@ -88,6 +91,11 @@ public class TestDaoImpl implements TestDao {
             "VALUES (:id, :case_id, :set_id, :order_);";
 
     private static final String INSERT_TEST_SET_SQL = "INSERT INTO test_set (id,title,created_by,status) VALUES(:id,:title,:qa_id,:status)";
+
+    private static final String INSERT_ACTION_SQL = "INSERT INTO action (id, definition, description, expected_result, status, test_case_id, metadata, \"order\", type,\n" +
+            "                    elem_id, feature)\n" +
+            "VALUES (:id, :definition, :description, :expected_result, :status, :test_case_id, :metadata::JSON, :order_, :type, :elem_id,\n" +
+            "        :feature);";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -113,6 +121,21 @@ public class TestDaoImpl implements TestDao {
         MapSqlParameterSource params = new MapSqlParameterSource().addValue("casesId", ids);
         return jdbcTemplate.query(GET_ACTIONS_BY_CASES_ID_SQL, params, new ActionRowMapper());
     }
+
+    @Override
+    public TestCaseDo getTestCaseById(long id) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("id", id);
+        return jdbcTemplate.query(GET_TEST_CASE_BY_ID_SQL, params, new TestCaseRowMapper()).stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public ActionDo getActionById(long id) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("id", id);
+        return jdbcTemplate.query(GET_ACTION_BY_ID_SQL, params, new ActionRowMapper()).stream().findFirst().orElse(null);
+    }
+
 
     @Override
     public TestSetDo saveTestSet(TestSetDo testSet) {
@@ -153,11 +176,28 @@ public class TestDaoImpl implements TestDao {
     }
 
     @Override
-    public TestCaseDo getTestCaseById(long id) {
+    public ActionDo saveAction(ActionDo action) {
+        String actionSeqQuery = "SELECT last_value FROM " + Sequences.ACTION_ID_SEQ;
+        long actionId = jdbcTemplate.queryForObject(actionSeqQuery, new MapSqlParameterSource(), long.class) + 1;
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("id", id);
-        return jdbcTemplate.query(GET_TEST_CASE_BY_ID_SQL, params, new TestCaseRowMapper()).stream().findFirst().orElse(null);
+                .addValue("id", actionId)
+                .addValue("definition", action.getDefinition())
+                .addValue("description", action.getDescription())
+                .addValue("expected_result", action.getExpectedResult())
+                .addValue("status", action.getStatus())
+                .addValue("test_case_id", action.getTestCaseId())
+                .addValue("metadata", mapToJson(action.getMetadata()))
+                .addValue("order_", action.getOrder())
+                .addValue("type", action.getType())
+                .addValue("elem_id", action.getElem_id())
+                .addValue("feature", action.getFeature());
+        jdbcTemplate.update(INSERT_ACTION_SQL, params);
+
+        return null;
     }
 
 
+    private String mapToJson(HashMap<String, String> map) {
+        return new Gson().toJson(map);
+    }
 }

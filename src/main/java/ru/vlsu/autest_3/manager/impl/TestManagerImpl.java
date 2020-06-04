@@ -74,6 +74,13 @@ public class TestManagerImpl implements TestManager {
         return withResult ? result : null;
     }
 
+    @Override
+    public ActionDo saveAction(ActionDo action, Boolean withResult) {
+        action.setStatus(Defaults.ACTION_STATUS);
+        ActionDo result = testDao.saveAction(action);
+        return withResult? result : null;
+    }
+
     private void collectActionsToCases(List<TestCaseDo> cases, List<ActionDo> actions) {
         for (TestCaseDo curCase : cases) {
             List<ActionDo> tempActions = new ArrayList<>();

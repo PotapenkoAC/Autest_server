@@ -16,9 +16,11 @@ public interface TestDao {
 
     TestCaseDo getTestCaseById(long id);
 
+    ActionDo getActionById(long id);
+
     TestSetDo saveTestSet(TestSetDo testSet);
 
     TestCaseDo saveTestCase(TestCaseDo testCase);
 
-
+    ActionDo saveAction(ActionDo action);
 }

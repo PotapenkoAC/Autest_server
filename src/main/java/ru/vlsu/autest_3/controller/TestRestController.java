@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.vlsu.autest_3.dao.model.ActionDo;
 import ru.vlsu.autest_3.dao.model.TestCaseDo;
 import ru.vlsu.autest_3.dao.model.TestSetDo;
 import ru.vlsu.autest_3.manager.TestManager;
@@ -53,9 +54,14 @@ public class TestRestController {
     @PostMapping("/rest/test_case")
     public HttpEntity<TestCaseDo> saveTestCase(@RequestBody TestCaseDo testCase, @RequestParam(required = false, defaultValue = "false", name = "_withResult") Boolean withResult, @RequestHeader(name = "Authorization") String authorization) {
         ResponseEntity.BodyBuilder response = ResponseEntity.status(201);
-        return response.body(testManager.saveTestCase(testCase, authorization,withResult));
+        return response.body(testManager.saveTestCase(testCase, authorization, withResult));
     }
 
+    @PostMapping("/rest/action")
+    public HttpEntity<ActionDo> saveAction(@RequestBody ActionDo action, @RequestParam(required = false, defaultValue = "false", name = "_withResult") Boolean withResult) {
+        ResponseEntity.BodyBuilder response = ResponseEntity.status(201);
+        return response.body(testManager.saveAction(action, withResult));
+    }
 
     //PATCH mappings
 }
